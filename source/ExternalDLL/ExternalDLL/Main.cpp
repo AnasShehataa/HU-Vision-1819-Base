@@ -9,31 +9,65 @@
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
+#include "IntensityImageStudent.h"
+#include "RGBImageStudent.h"
+#include <chrono>  // for high_resolution_clock
+#include <iostream> //std::cout
+#include <ctime>
+#include <ratio>
+#include <time.h>
+
 
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
+/*
+// Test
+IntensityImage * convert(RGBImage &rgbi) {
+	IntensityImageStudent * _IntensityImage = ImageFactory::newIntensityImage(rgbi.getWidth(), rgbi.getHeight());
 
+	int pixelCount = _IntensityImage->getHeight() * _IntensityImage->getWidth();
+
+	for (int i = 0; i < pixelCount; ++i) {
+		RGB oldPixel = rgbi.getPixel(i);
+
+		//Luminosity grayscaling algorithm
+		Intensity newPixel = (Intensity)(oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
+
+		_IntensityImage->setPixel(i, newPixel);
+	}
+
+	return _IntensityImage;
+}
+
+// 000 end of test 000
+*/
 int main(int argc, char * argv[]) {
 
-	ImageFactory::setImplementation(ImageFactory::DEFAULT);
-	//ImageFactory::setImplementation(ImageFactory::STUDENT);
+	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
+	ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 
-	ImageIO::debugFolder = "D:\\Users\\Rolf\\Downloads\\FaceMinMin";
+	ImageIO::debugFolder = "C:\\Users\\anass\\OneDrive\\Documents\\GitHub\\HU-Vision-1718-Base\\post_results";
+
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
 
-
-
-
+	
+	
 	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("D:\\Users\\Rolf\\Downloads\\TestA5.jpg", *input)) {
+	if (!ImageIO::loadImage("C:\\Users\\anass\\OneDrive\\Documents\\GitHub\\HU-Vision-1718-Base\\testsets\\Set A\\TestSet Images\\male-3.png", *input)) {
 		std::cout << "Image could not be loaded!" << std::endl;
 		system("pause");
 		return 0;
-	}
+	}	
 
 
 	ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
+	ImageIO::showImage(*input); //Show input Image
+
+	/*IntensityImage * convertedImage = convert(*input);
+
+	ImageIO::showImage(*convertedImage);*/
+
 
 	DLLExecution * executor = new DLLExecution(input);
 
@@ -51,29 +85,47 @@ int main(int argc, char * argv[]) {
 	return 1;
 }
 
-
-
-
-
-
-
-
-
-
 bool executeSteps(DLLExecution * executor) {
+	using namespace std::chrono;
+
+	typedef std::chrono::high_resolution_clock Clock;
+
+	auto t1 = Clock::now();
+	clock_t start, stop;
+	for (int counter = 0; counter<1; ++counter){
+		static auto t1 = Clock::now();
+		start = clock();
+		executor->executePreProcessingStep1(false);
+		stop = clock();
+
+	}
+	auto t2 = Clock::now();
+
+	duration<double> time_span1 = duration_cast<duration<double>>(t2 - t1);
+
+	std::cout << "Chrono student - time duration: " << time_span1.count() / 1000 << '\n';
+
+
+
+
+
+	
+
 
 	//Execute the four Pre-processing steps
-	if (!executor->executePreProcessingStep1(false)) {
+	/*(if (!executor->executePreProcessingStep1(true)) {
 		std::cout << "Pre-processing step 1 failed!" << std::endl;
 		return false;
-	}
+	}*/
+	
 
 	if (!executor->executePreProcessingStep2(false)) {
 		std::cout << "Pre-processing step 2 failed!" << std::endl;
 		return false;
 	}
+	
 	ImageIO::saveIntensityImage(*executor->resultPreProcessingStep2, ImageIO::getDebugFileName("Pre-processing-2.png"));
-
+	/*	
 	if (!executor->executePreProcessingStep3(false)) {
 		std::cout << "Pre-processing step 3 failed!" << std::endl;
 		return false;
@@ -85,9 +137,9 @@ bool executeSteps(DLLExecution * executor) {
 		return false;
 	}
 	ImageIO::saveIntensityImage(*executor->resultPreProcessingStep4, ImageIO::getDebugFileName("Pre-processing-4.png"));
+	*/
 
-
-
+	/*
 	//Execute the localization steps
 	if (!executor->prepareLocalization()) {
 		std::cout << "Localization preparation failed!" << std::endl;
@@ -154,7 +206,7 @@ bool executeSteps(DLLExecution * executor) {
 	if (!executor->executeRepresentation()) {
 		std::cout << "Representation failed!" << std::endl;
 		return false;
-	}
+	}*/
 	return true;
 }
 

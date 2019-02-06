@@ -18,3 +18,4 @@ IntensityImage::~IntensityImage() {
 void IntensityImage::set(const int width, const int height) {
 	Image::set(width, height);
 }
+

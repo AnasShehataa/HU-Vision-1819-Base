@@ -10,16 +10,20 @@ class RGBImageStudent : public RGBImage {
 public:
 
 	RGBImageStudent();
-	RGBImageStudent(const RGBImageStudent &other);
 	RGBImageStudent(const int width, const int height);
+	RGBImageStudent(const RGBImageStudent &other);
+	RGBImageStudent(const RGBImage &other);
 	~RGBImageStudent();
 
 	void set(const int width, const int height);
 	void set(const RGBImageStudent &other);
+	void set(const RGBImage &other);
 
 	void setPixel(int x, int y, RGB pixel);
 	void setPixel(int i, RGB pixel);
 
 	RGB getPixel(int x, int y) const;
 	RGB getPixel(int i) const;
+private:
+	RGB * pixelMap;
 };

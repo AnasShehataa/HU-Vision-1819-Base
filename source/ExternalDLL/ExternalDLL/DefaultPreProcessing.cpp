@@ -10,10 +10,23 @@
 #include "ImageFactory.h"
 #include "HereBeDragons.h"
 
+#include <iostream>
+#include <fstream>
+
 IntensityImage * DefaultPreProcessing::stepToIntensityImage(const RGBImage &src) const {
 	GrayscaleAlgorithm grayScaleAlgorithm;
 	IntensityImage * image = ImageFactory::newIntensityImage();
 	grayScaleAlgorithm.doAlgorithm(src, *image);
+
+	std::ofstream myfile;
+	myfile.open("Default.txt");
+
+	for (int i = 0; i < image->getHeight() * image->getWidth(); ++i) {
+		myfile << int(image->getPixel(i)) << "\n";
+	}
+
+	myfile.close();
+
 	return image;
 }
 

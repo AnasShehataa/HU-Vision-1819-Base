@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskName": "task-ExternalDLL2017",
+      "appliesTo": "ExternalDLL2017.sln",
+      "type": "launch"
+    }
+  ]
+}

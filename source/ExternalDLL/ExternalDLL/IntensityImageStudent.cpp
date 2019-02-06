@@ -1,75 +1,107 @@
 #include "IntensityImageStudent.h"
+#include "RGBImageStudent.h"
+#include "ImageFactory.h"
 
-IntensityImageStudent::IntensityImageStudent() : IntensityImage() {
-	int throwError = 0, e = 1 / throwError; //Throws error without the need to include a header
-	//TODO: Nothing
+
+IntensityImageStudent::IntensityImageStudent() : IntensityImage(), pixelMap(nullptr) { }
+
+IntensityImageStudent::IntensityImageStudent(const IntensityImageStudent &other) : IntensityImage(other.getWidth(), other.getHeight()), pixelMap(nullptr) {
+	const int SIZE = other.getWidth() * other.getHeight();
+
+	if (SIZE > 0) {
+		pixelMap = new Intensity[SIZE];
+		for (int i = 0; i < SIZE; i++) {
+			pixelMap[i] = other.getPixel(i);
+		}
+	}
 }
 
-IntensityImageStudent::IntensityImageStudent(const IntensityImageStudent &other) : IntensityImage(other.getWidth(), other.getHeight()) {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: Create a copy from the other object
+
+
+IntensityImageStudent::IntensityImageStudent(const IntensityImage &other) : IntensityImage(other.getWidth(), other.getHeight()), pixelMap(nullptr) {
+	const int SIZE = other.getWidth() * other.getHeight();
+	if (SIZE > 0) {
+		pixelMap = new Intensity[SIZE];
+		for (int i = 0; i < SIZE; i++) {
+			pixelMap[i] = other.getPixel(i);
+		}
+	}
 }
 
-IntensityImageStudent::IntensityImageStudent(const int width, const int height) : IntensityImage(width, height) {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: Initialize pixel storage
+IntensityImageStudent::IntensityImageStudent(const int width, const int height) : IntensityImage(width, height), pixelMap(nullptr) {
+	const int SIZE = width * height;
+	if (SIZE > 0) {
+		pixelMap = new Intensity[SIZE]{};
+	}
 }
 
 IntensityImageStudent::~IntensityImageStudent() {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: delete allocated objects
+	delete[] pixelMap;
 }
 
 void IntensityImageStudent::set(const int width, const int height) {
 	IntensityImage::set(width, height);
-	int throwError = 0, e = 1 / throwError;
-	//TODO: resize or create a new pixel storage (Don't forget to delete the old storage)
+	const int SIZE = (width * height);
+
+	if (SIZE > 0) {
+		delete[] pixelMap;
+		pixelMap = new Intensity[width * height];
+	}
+}
+
+void IntensityImageStudent::set(const IntensityImage &other) {
+	const int	SIZE = other.getWidth() * other.getHeight();
+	IntensityImage::set(other.getWidth(), other.getHeight());
+
+	if (SIZE > 0) {
+		delete[] pixelMap;
+		pixelMap = new Intensity[SIZE];
+		for (int i = 0; i < SIZE; i++) {
+			pixelMap[i] = other.getPixel(i);
+		}
+	}
 }
 
 void IntensityImageStudent::set(const IntensityImageStudent &other) {
+	const int	SIZE = other.getWidth() * other.getHeight();
 	IntensityImage::set(other.getWidth(), other.getHeight());
-	int throwError = 0, e = 1 / throwError;
-	//TODO: resize or create a new pixel storage and copy the object (Don't forget to delete the old storage)
+
+	if (SIZE > 0) {
+		delete[] pixelMap;
+		pixelMap = new Intensity[SIZE];
+		for (int i = 0; i < SIZE; i++) {
+			pixelMap[i] = other.getPixel(i);
+		}
+	}
 }
 
 void IntensityImageStudent::setPixel(int x, int y, Intensity pixel) {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: no comment needed :)
+	pixelMap[y * getWidth() + x] = pixel;
 }
 
 void IntensityImageStudent::setPixel(int i, Intensity pixel) {
-	int throwError = 0, e = 1 / throwError;
-	/*
-	* TODO: set pixel i in "Row-Major Order"
-	*
-	*
-	* Original 2d image (values):
-	* 9 1 2
-	* 4 3 5
-	* 8 7 8
-	*
-	* 1d representation (i, value):
-	* i		value
-	* 0		9
-	* 1		1
-	* 2		2
-	* 3		4
-	* 4		3
-	* 5		5
-	* 6		8
-	* 7		7
-	* 8		8
-	*/
+	pixelMap[i] = pixel;
 }
 
 Intensity IntensityImageStudent::getPixel(int x, int y) const {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: no comment needed :)
-	return 0;
+	return pixelMap[y * getWidth() + x];
 }
 
 Intensity IntensityImageStudent::getPixel(int i) const {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: see setPixel(int i, RGB pixel)
-	return 0;
+	return pixelMap[i];
 }
+
+/* 
+IntensityImage * IntensityImageStudent::RgbToIntensity(RGBImage & rgbImage)
+{
+	IntensityImage * outputImage = ImageFactory::newIntensityImage(rgbImage.getWidth(), rgbImage.getHeight());
+	int SIZE = rgbImage.getWidth() * rgbImage.getHeight();
+
+	for (int i = 0; i < SIZE; i++) {
+		RGB RgbPixel = rgbImage.getPixel(i);
+
+		Intensity OutputPixel = (Intensity)(RgbPixel.r * 0.2126) + (RgbPixel.g * 0.7152) + (RgbPixel.b * 0.0722); //Luminosity grayscaling algorithm ( Three algorithms for converting color to grayscalePosted on 24 August 2009 by John)
+		outputImage->setPixel(i, OutputPixel);
+	}
+	return outputImage;
+}*/
